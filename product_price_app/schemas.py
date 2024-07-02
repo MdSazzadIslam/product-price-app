@@ -17,6 +17,13 @@ class ProductUpdate(ProductRead):
     pass
 
 
+class PriceEntry(pydantic.BaseModel):
+    product_id: int
+    product_name: str
+    price: float
+    updated_at: str
+
+
 class PriceResponse(pydantic.BaseModel):
     product: str
     price: float
