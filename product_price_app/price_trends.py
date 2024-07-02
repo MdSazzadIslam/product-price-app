@@ -13,14 +13,35 @@ class PriceChange(str, Enum):
 
 
 def calculate_percentage_change(opening_price: float, final_price: float) -> float:
+    """
+    Calculate the percentage change from the opening price to the final price.
+
+    Args:
+        opening_price (float): The initial price.
+        final_price (float): The updated or final price.
+
+    Returns:
+        float: The percentage change as a float.
+    """
     if opening_price == 0:
-        return 0.0
-    return ((final_price - opening_price) / opening_price) * 100
+        return 0.0  # Avoid division by zero; no change if opening price is zero
+    percentage_change = ((final_price - opening_price) / opening_price) * 100
+    return percentage_change
 
 
 def calculate_price_trends(
     price_data: List[schemas.PriceEntry],
 ) -> List[schemas.PriceResponse]:
+    """
+    Calculate price trends based on the provided price data.
+
+    Args:
+        price_data (List[schemas.PriceEntry]): List of price entries to process.
+
+    Returns:
+        List[schemas.PriceResponse]: List of PriceResponse objects representing
+        current prices and their trends.
+    """
     prices_map = {}
 
     # Process price data to determine opening and final prices
@@ -53,20 +74,7 @@ def calculate_price_trends(
         percentage_change = calculate_percentage_change(opening_price, final_price)
 
         # Determine trend category
-        if percentage_change > 15:
-            trend = PriceChange.SHARPLY_UP
-        elif percentage_change > 5:
-            trend = PriceChange.UP
-        elif percentage_change < -15:
-            trend = PriceChange.SHARPLY_DOWN
-        elif percentage_change < -5:
-            trend = PriceChange.DOWN
-        elif percentage_change == 0:
-            trend = None  # No change
-        elif percentage_change < 0:
-            trend = PriceChange.SLIGHTLY_DOWN
-        else:
-            trend = PriceChange.SLIGHTLY_UP
+        trend = determine_price_trend(percentage_change)
 
         # Prepare response format
         response_entry = schemas.PriceResponse(
@@ -78,3 +86,29 @@ def calculate_price_trends(
         response_data.append(response_entry)
 
     return response_data
+
+
+def determine_price_trend(percentage_change: float) -> PriceChange:
+    """
+    Determine the price trend based on the percentage change.
+
+    Args:
+        percentage_change (float): Percentage change between opening and final prices.
+
+    Returns:
+        PriceChange: Enum representing the price trend.
+    """
+    if percentage_change > 15:
+        return PriceChange.SHARPLY_UP
+    elif percentage_change > 5:
+        return PriceChange.UP
+    elif percentage_change < -15:
+        return PriceChange.SHARPLY_DOWN
+    elif percentage_change < -5:
+        return PriceChange.DOWN
+    elif percentage_change == 0:
+        return None  # No change
+    elif percentage_change < 0:
+        return PriceChange.SLIGHTLY_DOWN
+    else:
+        return PriceChange.SLIGHTLY_UP

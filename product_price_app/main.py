@@ -4,7 +4,6 @@ from fastapi.responses import JSONResponse
 
 from . import crud, exceptions, schemas, external_api, price_trends
 
-
 app = FastAPI()
 
 
