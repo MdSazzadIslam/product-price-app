@@ -23,7 +23,6 @@ def fetch_price_data() -> List[schemas.PriceEntry]:
 
         return valid_entries
 
-    except requests.RequestException as e:
-        raise HTTPException(
-            status_code=500, detail=f"Error fetching data from external API: {str(e)}"
-        )
+    except Exception as e:
+        error_message = f"Error fetching data from external API: {str(e)}"
+        raise HTTPException(status_code=502, detail=error_message) from e
