@@ -1,7 +1,9 @@
+from typing import List
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 
-from . import crud, exceptions, schemas
+from . import crud, exceptions, schemas, external_api, price_trends
+
 
 app = FastAPI()
 
@@ -28,9 +30,7 @@ def create_product(product: schemas.ProductCreate):
 @app.put("/products/{product_key}", response_model=schemas.ProductRead)
 def update_product(product_key: str, product: schemas.ProductUpdate):
     if product_key != product.key:
-        raise HTTPException(
-            status_code=400, detail="Product key cannot be changed"
-        )
+        raise HTTPException(status_code=400, detail="Product key cannot be changed")
     return crud.update_product(product)
 
 
@@ -40,3 +40,31 @@ def object_does_not_exist_exception_handler(
 ) -> JSONResponse:
     # pylint: disable=unused-argument
     return JSONResponse(status_code=404, content={"message": str(exc)})
+
+
+@app.get("/prices", response_model=List[schemas.PriceResponse], tags=["Prices"])
+async def get_prices():
+    """
+    Retrieve current prices and their trends.
+
+    This endpoint fetches data from an external API and calculates the price trends
+    based on the fetched data. It returns a list of PriceResponse objects.
+
+    Raises:
+        HTTPException: If there is an issue fetching data or calculating trends.
+
+    Returns:
+        List[schemas.PriceResponse]: A list of PriceResponse objects representing current prices and trends.
+    """
+    try:
+        # Fetch price data from external API
+        price_data = external_api.fetch_price_data()
+
+        # Calculate price trends
+        price_trends_data = price_trends.calculate_price_trends(price_data)
+
+        return price_trends_data
+
+    except Exception as e:
+        error_message = f"Error fetching data from external API: {str(e)}"
+        raise HTTPException(status_code=502, detail=error_message) from e
