@@ -1,8 +1,4 @@
-# STX Coding Challenge
-
-This repository contains a coding challenge for the recruitment of Python
-developers.
-
+# Product-price-app
 
 ## Instructions
 
