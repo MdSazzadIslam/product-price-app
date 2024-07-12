@@ -1,26 +1,5 @@
 # Product-price-app
 
-## Instructions
-
-- If the task specification is incomplete, make an assumption and document it
-  with comments.
-
-- A FastAPI application is included in this repository. You are strongly
-  recommended to build upon it, considering the time limit. However, you may use
-  another web application framework if you prefer.
-
-- You may use additional libraries, but try to keep the number of dependencies
-  low.
-
-- Submit your solution as a .zip file containing your source code and any
-  instructions required to run the application. Do not include virtual
-  environments or cache files.
-
-- **Please provide the solution before the 2-hour deadline, even if it's not
-  complete. The goal is NOT to see a finished product but to observe your coding
-  and decision-making skills.**
-
-
 ## Assignment
 
 You are the new maintainer of a small Python web service that handles product
@@ -128,20 +107,3 @@ python3 -m http.server -d external_api 8081 &
 # Run the application
 uvicorn product_price_app.main:app --port 8080 --reload
 ```
-
-
-## NOTICE: UNLICENSED SOFTWARE – NOT FOR REDISTRIBUTION OR COMMERCIAL USE
-
-Please be aware that this software is UNLICENSED, and you are strictly
-prohibited from redistributing or using it for any commercial purposes. By
-accessing and using this software, you agree to comply with these restrictions.
-
-The source code and any associated files provided in this repository are solely
-for the purpose of completing the specific coding challenge associated with this
-package. Any attempt to redistribute, copy, modify, or otherwise use this
-software for commercial purposes or in a manner that violates these terms is
-strictly prohibited and may result in legal action.
-
-Please do not use this software for any other purpose than completing the coding
-challenge. If you have any questions or require clarification about the terms of
-use for this software, please contact the repository owner before proceeding.
