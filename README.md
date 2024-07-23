@@ -54,7 +54,7 @@ CLIENT_ORIGIN=http://localhost:3000
 ```
 ### Running locally
 If you are running the application without Docker, make sure that MongoDB is installed and running on your local machine. You can typically start MongoDB using the following command:
-
+```
 mongod
 ```
 # scripts
