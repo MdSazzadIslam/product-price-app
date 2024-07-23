@@ -73,7 +73,7 @@ npm run test
 ```
 
 # Deployment 
-To deploy the application using Docker:
+To deploy the application using Docker, which will automatically seed the data and run the application:
 ```
 docker-compose up -d
 ```
