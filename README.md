@@ -1,79 +1,109 @@
-# E-commerce Dashboard Solution
+# Product-price-app
 
-### Project Description
+## Assignment
 
-The goal is to develop a dashboard for the sales and marketing department to display various Key Performance Indicators (KPIs) related to product sales. The dashboard should be visually appealing and suitable for presentation to the management team. Key features include:
+You are the new maintainer of a small Python web service that handles product
+prices.
 
-### Charts:
-- Sales Trend Over Time:
-    - Line graph showcasing sales trends over specific periods (daily, monthly, quarterly, annually) to understand growth trends and seasonal changes.
+The service contains a set of products and aggregates prices from external
+sources. A web application uses the service to display the prices to users.
 
-- Sales by Region:
-    - Geographic heat map visualizing sales performance across different regions.
+You are tasked with implementing an API endpoint to display the products'
+current prices and price trends.
 
-- Sales by Category:
-    - Pie chart or bar graph illustrating sales distribution across various product categories.
-
-- Top Selling Products:
-    - Horizontal bar graph displaying the top 10 (or a chosen number) best-selling products.
-
-- Sales vs. Target:
-    - Bar graph with actual sales and target sales for each product/category.
-
-
-- Customer Demographics:
-    - Graphs breaking down sales by customer demographics such as age, gender, occupation, etc.
-
-- Revenue and Profit Analysis:
-    - Line graphs or bar graphs showing revenue, costs, and profit over time.
-
-- Sales Conversion Rate:
-    - Percentage of site visitors or leads that convert into sales, depicted over time or across marketing channels.
-
-### Tech stacks
-This project utilizes the following technologies:
+The new API endpoint should work as follows:
 ```
-Node.js: JavaScript runtime
-TypeScript: Static type-checking
-Apollo Server: GraphQL server
-Express: Web framework for Node.js
-MongoDB: NoSQL database
-Jest: Testing framework
+GET http://localhost:8080/prices
+```
+```json
+[
+	{
+		"product": "P001HYDRO",
+		"price": 1.15,
+		"currency": "EUR",
+		"daily_change": "DOWN"
+	},
+	{
+		"product": "P002SOLAR",
+		"price": 1.28,
+		"currency": "EUR",
+		"daily_change": "SLIGHTLY UP"
+	},
+	// ...
+]
 ```
 
-### Running the application   
+You will need to retrieve a list of today's market prices from an external API:  
+`GET http://localhost:8081/price-feed.json`.
 
-###  Environment variable
-Ensure the following environment variables are set:
+- The response from the external API is a JSON list of price updates. Each valid
+  price entry includes `product_id` (integer), `product_name` (string), `price`
+  (number), and `updated_at` (datetime). All prices are expressed in EUR.
 
+- The external API may return invalid price entries. You should ignore any price
+  entries that do not include valid values for the aforementioned fields.
+
+- Multiple price entries may exist for the same product. The first occurrence of
+  a product represents its opening price today, while subsequent occurrences
+  indicate price updates.
+
+In your API's output, the `daily_change` should reflect the following logic:
+
+- An increase of up to 5% is categorized as **SLIGHTLY UP**.
+- An increase of more than 5% but less than or equal to 15% is categorized as
+  **UP**.
+- An increase of more than 15% is categorized as **SHARPLY UP**.
+- A decrease of up to 5% is categorized as **SLIGHTLY DOWN**.
+- A decrease of more than 5% but less than or equal to 15% is categorized as
+  **DOWN**.
+- A decrease of more than 15% is categorized as **SHARPLY DOWN**.
+
+The increase/decrease is calculated as the percentage difference from the
+opening price to the final price:
 ```
-PORT=8000
-DB_URL=mongodb://localhost:27017/salesDashboard
-NODE_ENV=development
-CLIENT_ORIGIN=http://localhost:3000
+Price change = ((final price - opening price) / opening price) * 100
 ```
-### Running locally
-If you are running the application without Docker, make sure that MongoDB is installed and running on your local machine. You can typically start MongoDB using the following command:
-```
-mongod
-```
-# scripts
-1. Seed the Database
-```
-npm run seed
-```
-2. Start the Application in Development Mode
-```
-npm run dev
+- The opening price is the first appearance of the product in the API response.
+- The final price is the last appearance of the product in the API response.
+
+
+### Bonus: Testing
+
+The application lacks automated tests. Add unit tests for the new API endpoint
+and any other parts of the application that you think should be tested.
+
+Use the `pytest` framework for testing.
+
+
+### Bonus: Monitoring
+
+There is no monitoring set up. Propose metrics and alerts for the application. 
+Use Prometheus or other solution of your choice.
+
+
+## Running the application
+
+### Alternative 1: Docker Compose
+
+```sh
+# Run the application and the "external" market prices API
+docker compose up --build
+
+# Run the tests
+docker compose run app pytest -v
 ```
 
-3. Run Unit Tests
-```
-npm run test
-```
+### Alternative 2: Python virtual environment
 
-# Deployment 
-To deploy the application using Docker, which will automatically seed the data and run the application:
-```
-docker-compose up -d
+```sh
+# Create a virtual environment with the app's dependencies
+python3 -m venv .venv
+source .venv/bin/activate
+pip3 install -r requirements.txt
+
+# Run the "external" market prices API in the background
+python3 -m http.server -d external_api 8081 &
+
+# Run the application
+uvicorn product_price_app.main:app --port 8080 --reload
 ```
