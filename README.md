@@ -1,10 +1,8 @@
-### E-commerce Dashboard Solution
+# E-commerce Dashboard Solution
 
 ### Project Description
-```
-The goal is to develop a dashboard for the sales and marketing department to display various Key Performance Indicators (KPIs) related to product sales. The dashboard should be visually appealing and suitable for presentation to the management team. Key features include:
 
-```    
+The goal is to develop a dashboard for the sales and marketing department to display various Key Performance Indicators (KPIs) related to product sales. The dashboard should be visually appealing and suitable for presentation to the management team. Key features include:
 
 ### Charts:
 - Sales Trend Over Time:
@@ -33,21 +31,19 @@ The goal is to develop a dashboard for the sales and marketing department to dis
     - Percentage of site visitors or leads that convert into sales, depicted over time or across marketing channels.
 
 ### Tech stacks
-```
 This project utilizes the following technologies:
-
+```
 Node.js: JavaScript runtime
 TypeScript: Static type-checking
 Apollo Server: GraphQL server
 Express: Web framework for Node.js
 MongoDB: NoSQL database
 Jest: Testing framework
-
 ```
 
 ### Running the application   
 
-#  Environment variable
+###  Environment variable
 Ensure the following environment variables are set:
 
 ```
@@ -55,37 +51,29 @@ PORT=8000
 DB_URL=mongodb://localhost:27017/salesDashboard
 NODE_ENV=development
 CLIENT_ORIGIN=http://localhost:3000
-
 ```
-# Running locally
-```
+### Running locally
 If you are running the application without Docker, make sure that MongoDB is installed and running on your local machine. You can typically start MongoDB using the following command:
 
 mongod
-
 ```
 # scripts
 1. Seed the Database
 ```
 npm run seed
-
 ```
-2. Start the Application in the Development Mode
+2. Start the Application in Development Mode
 ```
 npm run dev
-
 ```
 
 3. Run Unit Tests
 ```
 npm run test
-
 ```
 
 # Deployment 
 To deploy the application using Docker:
-
 ```
 docker-compose up -d
-
 ```
